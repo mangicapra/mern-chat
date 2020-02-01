@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
-import Auth from './Auth/Auth';
+import Login from './Auth/Login/Login';
+import Register from './Auth/Register/Register';
 import ChatPage from './Chat/ChatPage';
 import { Provider } from 'react-redux';
 import store from './store';
@@ -18,11 +19,8 @@ class App extends Component {
 				<Router>
 					<div className="App">
 					<Switch>
-						<Route
-							path={"/auth"}
-							render={props => (
-								<Auth {...props} handleLogin={this.handleLogin} />
-							)} />
+							<Route path="/" exact component={Login} />
+							<Route path="/register" component={Register} />
 						<Route
 							exact
 							path={"/chat"}

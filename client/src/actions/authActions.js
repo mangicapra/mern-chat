@@ -59,6 +59,31 @@ export const register = ({name, email, password}, history) => dispatch => {
   })
 }
 
+export const login = ({email, password}, history) => dispatch => {
+  const config = {
+    headers: {
+      'Content-type': 'application/json'
+    }
+  }
+
+  const body = JSON.stringify({email, password});
+
+  axios.post('http://localhost:8080/api/auth', body, config)
+  .then(res => res.data).then(data => {
+    dispatch({
+      type: LOGIN_SUCCESS,
+      payload: data
+    })
+    history.push('/chat')
+  })
+  .catch(err => {
+    dispatch(returnErrors(err.response.data, err.response.status, 'LOGIN_FAIL'));
+    dispatch({
+      type: LOGIN_FAIL
+    })
+  })
+}
+
   // Setup config/headers and token
 export const tokenConfig = getState => {
     // Get token from localstorage

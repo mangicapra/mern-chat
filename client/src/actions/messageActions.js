@@ -1,4 +1,4 @@
-import { GET_MESSAGES, SEND_MESSAGE, DELETE_MESSAGE, SOCKET_EMIT } from "./types";
+import { GET_MESSAGES } from "./types";
 import axios from 'axios';
 
 export const getMessages = token => dispatch => {
@@ -15,44 +15,22 @@ export const getMessages = token => dispatch => {
     .catch(err => console.log(err));
 };
 
-export const sendMessage = (token, message) => dispatch => {
+export const sendMessage = (token, message, socket) => dispatch => {
     axios.post('http://localhost:8080/api/message', JSON.stringify(message), {
         headers: {
             "Content-Type": "application/json",
             "token": token
         }
     })
-    .then(res => res.data).then(data => dispatch({
-            type: SEND_MESSAGE,
-            payload: message
-    })
-    )
+    .then(res => res.data).then(data => socket.emit('new-message', data))
     .catch(err => console.log(err));
 };
 
-export const deleteMessage = (token, id) => dispatch => {
+export const deleteMessage = (token, id, socket) => dispatch => {
     axios.delete(`http://localhost:8080/api/message/${id}`, {
         headers: {
             "Content-Type": "application/json",
             "token": token
         }
-    }).then(res => res.data).then(data => dispatch({
-        type: DELETE_MESSAGE,
-        payload: id
-    }))
+    }).then(res => res.data).then(data => socket.emit('delete-message', id))
 };
-
-/**
- * Emit socket acctions
- */
-export const addNewMessageSocket = (socket, message) => {
-	return (dispatch) => {
-	    socket.emit('new-message', message)		
-	}
-}
-
-export const removeMessageSocket = (socket, messageId) => {
-    return (dispatch) => {
-	    socket.emit('delete-message', messageId)		
-	}
-}

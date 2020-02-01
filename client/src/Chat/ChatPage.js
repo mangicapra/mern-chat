@@ -5,10 +5,11 @@ import InputContainer from './InputContainer';
 import './ChatPage.css';
 import io from 'socket.io-client';
 import { connect } from 'react-redux';
-import { getMessages, deleteMessage, sendMessage, addNewMessageSocket, removeMessageSocket } from '../actions/messageActions';
+import { getMessages, deleteMessage, sendMessage } from '../actions/messageActions';
 import PropTypes from 'prop-types';
 import store from '../store';
 import { loadUser } from '../actions/authActions'
+import { SEND_MESSAGE, DELETE_MESSAGE } from "../actions/types";
 
 let socket;
 let token;
@@ -22,11 +23,17 @@ class ChatPage extends Component {
         socket = io.connect('http://localhost:8080');
 
         socket.on('new-message', message => {
-            this.props.sendMessage(token, message);
+            store.dispatch({
+                type: SEND_MESSAGE,
+                payload: message
+            })
         });
 
         socket.on('delete-message', messageId => {
-            this.props.deleteMessage(token, messageId)
+            store.dispatch({
+                type: DELETE_MESSAGE,
+                payload: messageId
+            })
         });
     }
 
@@ -37,7 +44,6 @@ class ChatPage extends Component {
 
     componentWillUnmount() {
         socket.disconnect()
-        alert("Disconnecting Socket as component will unmount")
     }
     
 
@@ -72,11 +78,11 @@ class ChatPage extends Component {
             content
         };
 
-        this.props.addNewMessageSocket(socket, body)
+        this.props.sendMessage(token, body, socket);
     }
 
     removeMessage = messageId => {
-        this.props.removeMessageSocket(socket, messageId)
+        this.props.deleteMessage(token, messageId, socket)
     }
 }
 
@@ -87,4 +93,4 @@ ChatPage.propTypes = {
 
 const mapStateToProps = (state) => ({ message: state.message });
 
-export default connect(mapStateToProps, { getMessages, deleteMessage, sendMessage, addNewMessageSocket, removeMessageSocket })(ChatPage);
+export default connect(mapStateToProps, { getMessages, deleteMessage, sendMessage })(ChatPage);
