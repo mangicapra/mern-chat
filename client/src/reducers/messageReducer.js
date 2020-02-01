@@ -1,4 +1,3 @@
-import openSocket from 'socket.io-client';
 import { GET_MESSAGES, SEND_MESSAGE, DELETE_MESSAGE } from '../actions/types';
 
 const initialState = {

@@ -11,7 +11,7 @@ const authMiddleware = require('./middleware/auth');
 const PORT = 8080;
 
 // Assign the value of your mongoDB connection string to this constant
-const dbConnectString = '';
+const dbConnectString = 'mongodb+srv://admin:adMiN12.33@cluster0-zme9p.mongodb.net/test?retryWrites=true&w=majority';
 
 // Updating mongoose's promise version
 mongoose.Promise = global.Promise;

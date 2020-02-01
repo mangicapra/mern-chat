@@ -1,6 +1,10 @@
 import React, { Component } from 'react'
 import { Button, Form, Grid, Header, Message, Segment } from 'semantic-ui-react'
-import axios from 'axios';
+import {Link} from "react-router-dom";
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
+import { login } from '../../actions/authActions';
+import { clearErrors } from '../../actions/errorActions';
 
 class Login extends Component {
 
@@ -10,9 +14,30 @@ class Login extends Component {
     this.state = {
         email: '',
         password: '',
-        loginErrors: ''
+        msg: ''
     };
 }
+
+componentDidUpdate(prevProps) {
+  const {error} = this.props;
+
+  if(error !== prevProps.error) {
+    if(error.id === 'LOGIN_FAIL') {
+      this.setState({
+        msg: error.msg.msg
+      })
+    } else {
+      this.setState({msg: null})
+    }
+  }
+}
+
+static propTypes = {
+  isAuthenticated: PropTypes.bool,
+  error: PropTypes.object.isRequired,
+  login: PropTypes.func.isRequired,
+  clearErrors: PropTypes.func.isRequired
+};
 
     render() {
         return (
@@ -23,6 +48,7 @@ class Login extends Component {
           </Header>
           <Form onSubmit={this.handleSubmit}  size='large'>
             <Segment stacked>
+              {this.state.msg ? <Message style={{color: 'red'}}>{this.state.msg}</Message> : null}
               <Form.Input onChange={this.handleChange} name="email" fluid icon='mail' iconPosition='left' placeholder='E-mail address' />
               <Form.Input
                 onChange={this.handleChange}
@@ -40,7 +66,7 @@ class Login extends Component {
             </Segment>
           </Form>
           <Message>
-            New to us? <a href='/auth/register'>Sign Up</a>
+            New to us? <Link to="/register">Sign Up</Link>
           </Message>
         </Grid.Column>
       </Grid>
@@ -49,25 +75,19 @@ class Login extends Component {
 
     handleSubmit = () => {
       const {email, password} = this.state
+      this.props.clearErrors();
 
-      axios.post('http://localhost:8080/api/auth', JSON.stringify({email, password}), {
-        headers: {
-            "Content-Type": "application/json"
-        }
-      }).then(res => res.data).then(body => {
-        if(body.status === 'created') {
-          this.setState({
-            email: '',
-            password: '',
-            loginErrors: ''
-          });
-          
-          this.props.handleSuccessfulAuth(body)
-        }
-      })
+      const user = {email, password};
+
+      this.props.login(user, this.props.history);
     }
 
     handleChange = e => this.setState({[e.target.name]: e.target.value});
 }
 
-export default Login;
+const mapStateToProps = state => ({
+  isAuthenticated: state.auth.isAuthenticated,
+  error: state.error
+})
+
+export default connect(mapStateToProps, {login, clearErrors})(Login);

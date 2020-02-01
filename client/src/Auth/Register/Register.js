@@ -1,10 +1,10 @@
 import React, { Component } from 'react'
 import { Button, Form, Grid, Header, Message, Segment } from 'semantic-ui-react'
-import axios from 'axios';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { register } from '../../actions/authActions';
 import { clearErrors } from '../../actions/errorActions';
+import {Link} from "react-router-dom";
 
 class Register extends Component {
 
@@ -50,7 +50,7 @@ static propTypes = {
           </Header>
           <Form onSubmit={this.handleSubmit} size='large'>
             <Segment stacked>
-              {this.state.msg ? <Message>{this.state.msg}</Message> : null}
+              {this.state.msg ? <Message style={{color: 'red'}}>{this.state.msg}</Message> : null}
               <Form.Input fluid onChange={this.handleChange} type="text" icon='user' name="name" iconPosition='left' placeholder='Full name' />
               <Form.Input fluid onChange={this.handleChange} type="email" icon='mail' name="email" iconPosition='left' placeholder='E-mail address' />
               <Form.Input
@@ -69,7 +69,7 @@ static propTypes = {
             </Segment>
           </Form>
           <Message>
-            Have an account? <a href='/auth/login'>Sign in</a>
+            Have an account? <Link to="">Sign in</Link>
           </Message>
         </Grid.Column>
       </Grid>
