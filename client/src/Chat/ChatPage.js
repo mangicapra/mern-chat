@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { Grid } from 'semantic-ui-react';
 import MessagesContainer from './MessagesContainer';
+import ConversationsPage from './ConversationsPage';
 import InputContainer from './InputContainer';
 import './ChatPage.css';
 import io from 'socket.io-client';
@@ -52,7 +53,22 @@ class ChatPage extends Component {
         return(
             <Grid>
             <p>{this.props.loggedInStatus}</p>
-                <Grid.Column width={4} />
+                <Grid.Column width={4}>
+                    {/* <div>
+                     <h4>Started conversations</h4>
+
+                    </div>
+                    <Modal size="mini" open={this.state.modalOpen} trigger={<Button onClick={this.toggleModal} primary>New Chat</Button>}>
+                        <Modal.Header>Start a conversation with:</Modal.Header>
+                        <Modal.Content>
+                            <p>test</p>
+                        </Modal.Content>
+                        <Modal.Actions>
+                            <Button onClick={this.toggleModal} negative>Close</Button>
+                        </Modal.Actions>
+                    </Modal> */}
+                    <ConversationsPage token={token} />
+                </Grid.Column>
                 <Grid.Column width={8}>
                     <Grid.Row className="messages-container">
                         {messages.length > 0 ?

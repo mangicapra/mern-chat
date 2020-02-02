@@ -3,6 +3,7 @@ const app = express();
 const mongoose = require('mongoose');
 const Message = require('./models/message');
 const User = require('./models/user');
+const Conversation = require('./models/conversation')
 const socket = require('socket.io');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
@@ -142,6 +143,27 @@ app.get('/api/message', authMiddleware, (req, res) => {
         }
     });
 });
+
+// GET list of conversation users
+app.get('/api/conversations/users', authMiddleware, (req, res) => {
+    User.find({ _id: { $ne: req.user.id } }).then(user => {
+        res.send(user).status(200)
+    }).catch(err => {
+        console.log(err)
+        res.send(err).status(500)
+    });
+})
+
+// Create a new conversation
+app.post('/api/conversations', authMiddleware, (req, res) => {
+    const partisipants = [req.body.id, req.user.id]
+    Conversation.create({partisipants}).then(message => {
+        res.send(message).status(200);
+    }).catch(err => {
+        console.log(err)
+        res.send(err).status(500)
+    })
+})
 
 // POST a new message
 app.post('/api/message', authMiddleware, (req, res) => {
