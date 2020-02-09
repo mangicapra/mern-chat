@@ -54,20 +54,7 @@ class ChatPage extends Component {
             <Grid>
             <p>{this.props.loggedInStatus}</p>
                 <Grid.Column width={4}>
-                    {/* <div>
-                     <h4>Started conversations</h4>
-
-                    </div>
-                    <Modal size="mini" open={this.state.modalOpen} trigger={<Button onClick={this.toggleModal} primary>New Chat</Button>}>
-                        <Modal.Header>Start a conversation with:</Modal.Header>
-                        <Modal.Content>
-                            <p>test</p>
-                        </Modal.Content>
-                        <Modal.Actions>
-                            <Button onClick={this.toggleModal} negative>Close</Button>
-                        </Modal.Actions>
-                    </Modal> */}
-                    <ConversationsPage token={token} />
+                    <ConversationsPage socket={socket} token={token} />
                 </Grid.Column>
                 <Grid.Column width={8}>
                     <Grid.Row className="messages-container">
